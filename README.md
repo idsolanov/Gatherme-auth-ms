@@ -2,6 +2,7 @@
 
 ## project setup
 npm install
+npm init
 npm i -S bcrypt-nodejs
 npm i -S body-parser
 npm i -S express
