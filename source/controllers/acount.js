@@ -4,6 +4,7 @@ const Service = require('../service/index')
 
 
 function signUp(req, res){
+
     const account= new Account({
         email : req.body.email,
         nickName: req.body.nickName,
@@ -12,7 +13,7 @@ function signUp(req, res){
     
     account.save((err)=>{
         if(err) return res.status(500).send({message: `error al crear el usuario ${err}`})
-        res.status(200).send({email:account.email,token: Service.createToken(account)})
+        res.status(200).send({email:account.email,nickName:account.nickName,token: Service.createToken(account)})
     })
 
 }
@@ -31,6 +32,7 @@ function signIn(req, res){
             res.status(200).send({
                 message: 'te has logueado correctamente!!',
                 email: account.email,
+                nickName: account.nickName,
                 token: Service.createToken(account)
             })
 
@@ -41,8 +43,12 @@ function signIn(req, res){
 }
 
 function youcanPass(req, res){
+
     if(!req.headers.authorization){
-        return res.status(403).send({authorization:false,message:"no estas autorizado"})
+        return res.status(403).send({
+            authorization:false,
+            message:"no estas autorizado"
+        })
     }
     const token = req.headers.authorization.split(" ")[1]
     Service.decodeToken(token)
@@ -60,7 +66,6 @@ function youcanPass(req, res){
 
 function getAccount(req,res){
 
-    console.log(`id:${req.params.id}`)
     let accountId = req.params.id
 
     Account.findById(accountId,(err,account)=>{
@@ -93,7 +98,6 @@ function updateAccount(req,res){
 }
 
 function saveAccount(req,res){
-    console.log(req.body)
 
     let account = new Acount()
     account.nickName = req.body.nickName
@@ -103,11 +107,12 @@ function saveAccount(req,res){
     account.save((err,accountStrored) =>{
         if(err) res.status(500).send({message: `error al salvar en la base de datos: ${err}`})
 
-        res.status(200).send({account: accountStrored})
+        res.status(200).send({accountStrored})
     })
 }
 
 function deleteAccount(req,res){
+    
     let accountId = req.params.id
     Account.findById(accountId,(err,account)=>{
         if(err) return res.status(500).send({message:'error al conectar con el servidor'})
