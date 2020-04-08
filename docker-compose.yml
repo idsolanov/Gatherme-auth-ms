@@ -10,7 +10,7 @@ services:
             - gatherme-authentication-d
     gatherme-authentication-db:
         container_name: gatherme-authentication-db
-        image: mongo: 3.6
+        image: mongo
         ports: 
             - '27017:27017'
 
