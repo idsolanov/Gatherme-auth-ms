@@ -1,0 +1,17 @@
+version: '3'
+services:
+    gatherme-authentication-ms:
+        container_name: gatherme-authentication-ms
+        build: .
+        restart: always
+        ports:
+            - '3001:3001'
+        links: 
+            - gatherme-authentication-d
+    gatherme-authentication-db:
+        container_name: gatherme-authentication-db
+        image: mongo: 3.6
+        ports: 
+            - '27017:27017'
+
+

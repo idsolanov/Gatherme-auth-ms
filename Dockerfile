@@ -1,11 +1,15 @@
 #base image based in node.js
 FROM node:current-slim
 
-WORKDIR /source/controllers/acount.js
-COPY package.json .
+WORKDIR /usr/src/app
+
+COPY package.json ./
+
 RUN npm install
 
+COPY . .
+
 EXPOSE 3001
+
 CMD [ "npm","start"]
 
-COPY . .
