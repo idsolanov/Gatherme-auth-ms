@@ -6,6 +6,6 @@ COPY package.json .
 RUN npm install
 
 EXPOSE 3001
-CMD [ "npm","index.js"]
+CMD [ "npm","start"]
 
 COPY . .
