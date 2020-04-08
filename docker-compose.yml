@@ -7,7 +7,7 @@ services:
         ports:
             - '3001:3001'
         links: 
-            - gatherme-authentication-d
+            - gatherme-authentication-db
     gatherme-authentication-db:
         container_name: gatherme-authentication-db
         image: mongo
