@@ -1,0 +1,220 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Authentication microservice
+  description: JavaScript
+host: host:3001
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /signUp:
+    post:
+      summary: Creates a new Account
+      parameters:
+        - name: account
+          in: body
+          required: true
+          description: account Object
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '201':
+          description: Created
+          schema: 
+            $ref: '#/definitions/tokenModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /signIn:
+    get:
+      summary: find the account with the given id and check the password
+      parameters:
+        - name: account
+          in: body
+          required: true
+          description: account Object
+          schema:
+            $ref: '#/definitions/singInModel'
+      responses:
+        '200':
+          description: logged in server
+          schema:
+            $ref: '#/definitions/tokenModel'
+        '404':
+          description: wrong data / not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /auth:
+    post:
+      summary: check the token reciben in the header authorization
+      parameters:
+        - name: authorization
+          type: string
+          in: header
+          required: true
+          description: a header with the given token
+      responses:
+        '403':
+          description: unauthorized 
+          schema:
+            $ref: '#/definitions/authModel'
+        '200':
+          description: authorizated 
+          schema:
+            $ref: '#/definitions/authModel'
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /accout/{:id}:
+    get:
+      summary: get an account by id
+      parameters: 
+        - name: id
+          type: string
+          in: path
+          required: true
+          description: an string of account id
+      responses:
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '200':
+          description: finded
+          schema:
+            $ref: '#/definitions/Account'
+    put:
+      summary: update an account by id
+      parameters:
+        - name: account
+          required: true
+          in: body
+          description: an account object
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '200':
+          description: updated
+          schema:
+            $ref: '#/definitions/Account'
+    delete:
+      summary: delete an account by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          description: an string of account id
+      responses:
+        '500' :
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: not found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '200':
+          description: deleted
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /account:
+    post:
+      summary: create an account
+      parameters:
+        - name: account
+          in: body
+          required: true
+          description: an account object
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '200':
+          description: created
+          schema:
+            $ref: '#/definitions/Account'
+  /accounts:
+    get:
+      summary: get all the accounts in server
+      responses:
+        '500':
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '200':
+          description: finded
+          schema:
+            $ref: '#/definitions/listAccount'
+    
+    
+definitions:
+  Account:
+    type: object
+    properties:
+      email:
+        type: string
+      nickName:
+        type: string
+      password:
+        type: string
+  listAccount:
+    type: array
+    items:
+      $ref: '#/definitions/Account'
+  singInModel:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+
+  tokenModel:
+    type: object
+    properties:
+      email:
+        type: string
+      nickName:
+        type: string
+      token:
+        type: string
+  authModel:
+    type: object
+    properties:
+      authorization: 
+        type: boolean
+      message: 
+        type: string
+  ErrorModel:
+    type: object
+    properties:
+      message:
+        type: string
+        

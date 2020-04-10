@@ -3,7 +3,7 @@ const Account = require('../models/acount')
 const Service = require('../service/index')
 
 
-function signUp(req, res){
+function signUp(req, res){  
 
     const account= new Account({
         email : req.body.email,
@@ -13,7 +13,11 @@ function signUp(req, res){
     
     account.save((err)=>{
         if(err) return res.status(500).send({message: `error al crear el usuario ${err}`})
-        res.status(200).send({email:account.email,nickName:account.nickName,token: Service.createToken(account)})
+        res.status(201).send({
+            email:account.email,
+            nickName:account.nickName,
+            token: Service.createToken(account)
+        })
     })
 
 }
@@ -30,7 +34,6 @@ function signIn(req, res){
 
             req.account=account
             res.status(200).send({
-                message: 'te has logueado correctamente!!',
                 email: account.email,
                 nickName: account.nickName,
                 token: Service.createToken(account)
@@ -93,7 +96,9 @@ function updateAccount(req,res){
     let update = req.body
     Account.findByIdAndUpdate(accountId,update,(err,accountUpdate)=>{
         if(err) return res.status(500).send({message: 'error al conectar con el servidor'})
-        res.status(200).send({message: 'cuenta actualizada con exito',account:accountUpdate})
+        if(!accountUpdate) return res.status(404).send({message: `cuenta no encontrada`})
+        accountUpdate.password=null
+        res.status(200).send({accountUpdate})
     })
 }
 
