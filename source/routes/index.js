@@ -2,6 +2,7 @@
 const express = require('express')
 const api = express.Router()
 const accountCtrl = require('../controllers/acount')
+const tokenCtrl= require('../controllers/token')
 const auth =require('../middleware/auth')
 
 
@@ -9,7 +10,10 @@ api.post('/signUp',accountCtrl.signUp)
 
 api.post('/signIn',accountCtrl.signIn)
 
-api.post('/auth',accountCtrl.youcanPass)
+api.post('/signOut',accountCtrl.signOut)
+
+api.post('/auth',tokenCtrl.token,accountCtrl.authorization)
+
 
 api.get('/account/:id', auth.isAuth, accountCtrl.getAccount)
 api.get('/accounts', auth.isAuth, accountCtrl.getAccounts)

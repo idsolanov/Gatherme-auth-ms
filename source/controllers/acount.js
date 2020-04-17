@@ -1,5 +1,6 @@
 'use strict'
 const Account = require('../models/acount')
+const tokenCntrl = require('../controllers/token')
 const Service = require('../service/index')
 
 
@@ -45,26 +46,38 @@ function signIn(req, res){
     })
 }
 
-function youcanPass(req, res){
-
+function signOut(req,res){
     if(!req.headers.authorization){
         return res.status(403).send({
             authorization:false,
             message:"no estas autorizado"
         })
     }
+    tokenCntrl.saveToken(req,res)
+    
+
+}
+
+function authorization(req, res){
+
+    if(!req.headers.authorization){
+        return res.status(401).send({
+            authorization:false,
+            message:"no estas autorizado"
+        })
+    }
     const token = req.headers.authorization.split(" ")[1]
     Service.decodeToken(token)
-        .then(response =>{
-            req.account=response
-            res.status(200).send({
-                authorization:true,
-                message:'estas autorizado'
-            })
+    .then(response =>{
+        req.account=response
+        res.status(200).send({
+            authorization:true,
+            message:'estas autorizado'
         })
-        .catch(response=>{
-            res.status(response.status).send({message: response.message})
-        })
+    })
+    .catch(response=>{
+        res.status(response.status).send({message: response.message})
+    })
 }
 
 function getAccount(req,res){
@@ -135,10 +148,11 @@ function deleteAccount(req,res){
 module.exports={
     signIn,
     signUp,
+    signOut,
     getAccount,
     getAccounts,
     updateAccount,
     deleteAccount,
     saveAccount,
-    youcanPass
+    authorization
 }
