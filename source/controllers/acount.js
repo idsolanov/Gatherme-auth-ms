@@ -4,7 +4,7 @@ const tokenCntrl = require('../controllers/token')
 const Service = require('../service/index')
 
 
-function signUp(req, res){  
+function singUp(req, res){  
 
     const account= new Account({
         email : req.body.email,
@@ -23,7 +23,7 @@ function signUp(req, res){
 
 }
 
-function signIn(req, res){
+function singIn(req, res){
 
     Account.findOne({ email: req.body.email},(err,account)=>{
         if(err) return res.status(500).send({message: `error: ${err}`})
@@ -46,7 +46,7 @@ function signIn(req, res){
     })
 }
 
-function signOut(req,res){
+function singOut(req,res){
     if(!req.headers.authorization){
         return res.status(403).send({
             authorization:false,
@@ -76,7 +76,9 @@ function authorization(req, res){
         })
     })
     .catch(response=>{
-        res.status(response.status).send({message: response.message})
+        res.status(response.status).send({
+            authorization: false,
+            message: response.message})
     })
 }
 
@@ -146,9 +148,9 @@ function deleteAccount(req,res){
 }
 
 module.exports={
-    signIn,
-    signUp,
-    signOut,
+    singIn,
+    singUp,
+    singOut,
     getAccount,
     getAccounts,
     updateAccount,

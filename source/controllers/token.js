@@ -18,12 +18,18 @@ function saveToken(req,res){
 }
 function token(req,res,next){
     if (!req.headers.authorization){
-        return res.status(403).send({message:"no estas autorizado"})
+        return res.status(403).send({
+            authorization:false,
+            message:"no estas autorizado"})
     }
     let t= req.headers.authorization.split(" ")[1]
     Token.findOne({token:t},(err,tokenF)=>{
-        if(err) return res.status(500).send({message: `internal server error ${err}`})
-        if(tokenF) return res.status(401).send({message:'token en blacklist'})
+        if(err) return res.status(500).send({
+            authorization: false,
+            message: `internal server error ${err}`})
+        if(tokenF) return res.status(401).send({
+            authorization: false,
+            message:'token en blacklist'})
         next()
     })
 }

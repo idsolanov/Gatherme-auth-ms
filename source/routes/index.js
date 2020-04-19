@@ -6,11 +6,11 @@ const tokenCtrl= require('../controllers/token')
 const auth =require('../middleware/auth')
 
 
-api.post('/signUp',accountCtrl.signUp)
+api.post('/singUp',accountCtrl.singUp)
 
-api.post('/signIn',accountCtrl.signIn)
+api.post('/singIn',accountCtrl.singIn)
 
-api.post('/signOut',accountCtrl.signOut)
+api.post('/singOut',accountCtrl.singOut)
 
 api.post('/auth',tokenCtrl.token,accountCtrl.authorization)
 
