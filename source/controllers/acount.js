@@ -12,6 +12,8 @@ function singUp(req, res){
         password: req.body.password
     })
     
+    
+
     account.save((err)=>{
         if(err) return res.status(500).send({message: `error al crear el usuario ${err}`})
         res.status(201).send({

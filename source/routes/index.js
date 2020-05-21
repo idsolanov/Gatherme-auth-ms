@@ -4,9 +4,11 @@ const api = express.Router()
 const accountCtrl = require('../controllers/acount')
 const tokenCtrl= require('../controllers/token')
 const auth =require('../middleware/auth')
-
+const ldap = require ('../middleware/ldap')
 
 api.post('/singUp',accountCtrl.singUp)
+
+api.post ('/ldap',ldap.signUp)
 
 api.post('/singIn',accountCtrl.singIn)
 
