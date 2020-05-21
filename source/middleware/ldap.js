@@ -1,7 +1,7 @@
 'use strict'
 const Account = require('../models/acount')
 const ldapjs = require('ldapjs')
-const config = require('./source/config')
+const config = require('../config')
 
 const ldapOptions = {
     url:config.LDAPurl,
