@@ -19,16 +19,19 @@ function signUp(req,res){
         nickName: req.body.nickName,
         password: req.body.password
     })
+    console.log("aca ya encontre el json y cree mi account")
     let addUser = (account) => {
         return new Promise((resolve, reject) => {
-      
+          console.log("entro a mi promesa :v")
           // 1
           const ldapClient = ldapjs.createClient(ldapOptions);
+          console.log("logre crear el ldapclient")
 
           ldapClient.on('error', function (err) {
             if (err.syscall == "connect") {
               console.log(err);
             }
+            console.log("al parecer no hay error en la funcion .on")
           });
       
           // 2
@@ -48,8 +51,9 @@ function signUp(req,res){
                 objectClass: ["account", "organizationalaccount", "inetOrgAccount"]
                 //pwdPolicySubentry: ldapConfig.pwdPolicySubentry
               };
-      
+              console.log("pude crear el usuario")
               // 3
+              console.log('cn=' + account.email + ',' + config.LDAPdomain)
               ldapClient.add(
                 'cn=' + account.email + ',' + config.LDAPdomain,
                 newUser,
