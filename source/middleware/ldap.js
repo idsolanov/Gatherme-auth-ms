@@ -14,13 +14,13 @@ const ldapOptions = {
 
 function signUp(req,res){
 
-    const account= new Account({
+    const accountt= new Account({
         email : req.body.email,
         nickName: req.body.nickName,
         password: req.body.password
     })
     console.log("aca ya encontre el json y cree mi account")
-    let addUser = (account) => {
+    let addUser = (accountt) => {
         return new Promise((resolve, reject) => {
           console.log("entro a mi promesa :v")
           // 1
@@ -30,6 +30,9 @@ function signUp(req,res){
           ldapClient.on('error', function (err) {
             if (err.syscall == "connect") {
               console.log(err);
+              return res.status(500).send({
+                message: 'error en la funcion on'
+              })
             }
             console.log("al parecer no hay error en la funcion .on")
           });
@@ -42,7 +45,11 @@ function signUp(req,res){
             config.LDAPpassword,
             (err) => {
       
-              if (err) return reject(err);
+              if (err) {
+                res.status(500).send({
+                  message: 'error en la funcion bind'
+                })
+                return reject(err);}
       
               let newUser = {
                 cn: account.email,
@@ -58,7 +65,14 @@ function signUp(req,res){
                 'cn=' + account.email + ',' + config.LDAPdomain,
                 newUser,
                 (err, response) => {
-                  if (err) return reject(err);
+                  if (err) {
+                    res.status(500).sedn({
+                      message: 'error en la funcion add'
+                    })
+                    return reject(err);}
+                  res.status(200).send({
+                    message: 'funciono perfecto!!'
+                  })
                   return resolve(response);
                 }
               );
