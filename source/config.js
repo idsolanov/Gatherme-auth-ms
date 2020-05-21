@@ -4,7 +4,7 @@ module.exports={
     localhost: 'localhost',
     db: process.env.MONGODB|| 'mongodb://gatherme-authentication-db:27017/auth_ms',
     SECRET_TOKEN: '104179G104183A104207T104231H104233E104239R104243M104281E104287AUTH104297',
-    LDAPurl: 'ldap://172.17.0.1:386',
+    LDAPurl: 'ldap://172.17.0.1:389',
     LDAPTimeOut: 100,
     LDAPConnectTimeOut: 100,
     LDAPReconnect: true,
