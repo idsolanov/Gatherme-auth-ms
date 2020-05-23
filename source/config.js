@@ -2,14 +2,14 @@ module.exports={
     port : process.env.PORT || 3001,
     dbhost: 'gatherme-authentication-db',
     localhost: 'localhost',
-    db: process.env.MONGODB|| 'mongodb://gatherme-authentication-db:27017/auth_ms',
+    db: process.env.MONGODB|| 'mongodb://localhost:27017',//'mongodb://gatherme-authentication-db:27017/auth_ms',
     SECRET_TOKEN: '104179G104183A104207T104231H104233E104239R104243M104281E104287AUTH104297',
-    LDAPurl: 'ldap://172.17.0.1:389',
-    LDAPTimeOut: 100,
-    LDAPConnectTimeOut: 100,
-    LDAPReconnect: true,
-    LDAPuser:'cn=admin,dc=arqsoft,dc=unal,dc=edu,dc=co',
-    LDAPpassword: 'admin',
-    LDAPdomain: 'arqsoft.unal.edu.co'
+    ldap_port:1389,
+    ldap_url:'ldap://127.0.0.1',
+    ldap_timeout: 1000,
+    ldap_connectTimeout: 1000,
+    ldap_Server_user:'cn = root',
+    ldap_Server_password:'gatherme'
+
 
 }

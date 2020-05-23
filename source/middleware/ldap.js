@@ -3,86 +3,110 @@ const Account = require('../models/acount')
 const ldapjs = require('ldapjs')
 const config = require('../config')
 
-const ldapOptions = {
-    url:config.LDAPurl,
-    timeout:config.LDAPTimeOut,
-    connectTimeout: config.LDAPConnectTimeOut,
-    reconnect: config.LDAPReconnect
-  };
+
+function signUp(req,res,next){
+
+  const account= new Account({
+    email : req.body.email,
+    nickName: req.body.nickName,
+    password: req.body.password
+  })
   
-//const ldapClient = ldapjs.createClient(ldapOptions);
+  const client = ldapjs.createClient({
 
-function signUp(req,res){
+    url : config.ldap_url+":"+config.ldap_port,
+    timeout : config.ldap_timeout,
+    connectTimeout: config.ldap_connectTimeout,
+    reconnect: true
+    
+  })
 
-    const accountt= new Account({
-        email : req.body.email,
-        nickName: req.body.nickName,
-        password: req.body.password
-    })
-    console.log("aca ya encontre el json y cree mi account")
-    let addUser = (accountt) => {
-        return new Promise((resolve, reject) => {
-          console.log("entro a mi promesa :v")
-          // 1
-          const ldapClient = ldapjs.createClient(ldapOptions);
-          console.log("logre crear el ldapclient")
+  client.bind(config.ldap_Server_user, config.ldap_Server_password, function(err) {
+    if(err){
+      console.log(`Conexion Fallida error: ${err}`)
+      return res.status(500).send({
+        message: `Conexion Fallida error: ${err}`
+      })
+    }else{
+      console.log("Conexion exitosa!!!")
 
-          ldapClient.on('error', function (err) {
-            if (err.syscall == "connect") {
-              console.log(err);
-              return res.status(500).send({
-                message: 'error en la funcion on'
-              })
-            }
-            console.log("al parecer no hay error en la funcion .on")
-          });
-      
-          // 2
-          ldapClient.bind(
-            //ldapConfig.pwdUser,
-            config.LDAPuser,
-            //ldapConfig.pwdUserPassword,
-            config.LDAPpassword,
-            (err) => {
-      
-              if (err) {
-                res.status(500).send({
-                  message: 'error en la funcion bind'
-                })
-                return reject(err);}
-      
-              let newUser = {
-                cn: account.email,
-                nickName: account.nickName,
-                Password: account.password,
-                objectClass: ["account", "organizationalaccount", "inetOrgAccount"]
-                //pwdPolicySubentry: ldapConfig.pwdPolicySubentry
-              };
-              console.log("pude crear el usuario")
-              // 3
-              console.log('cn=' + account.email + ',' + config.LDAPdomain)
-              ldapClient.add(
-                'cn=' + account.email + ',' + config.LDAPdomain,
-                newUser,
-                (err, response) => {
-                  if (err) {
-                    res.status(500).sedn({
-                      message: 'error en la funcion add'
-                    })
-                    return reject(err);}
-                  res.status(200).send({
-                    message: 'funciono perfecto!!'
-                  })
-                  return resolve(response);
-                }
-              );
-            }
-          );
-        });
-      }
+      var entry = {
+        cn: account.email,
+        nickName: account.nickName,
+        password: account.password,
+        objectclass: 'inetOrgPerson'
+      };
 
+      client.add(`cn = ${entry.cn}, ou = users, o = gatherme`, entry, function(err) {
+        if(err){
+          console.log(`error al crear cuenta, error: ${err}`)
+          client.unbind()
+          client.destroy()
+          return res.status(500).send({
+            message: `error al crear cuenta, error: ${err}`
+          })
+        }else{
+          console.log("Cuenta creada correctamente!!")
+          client.unbind()
+          client.destroy()
+          next()
+        }
+      });
+    }
+  });
+}
 
+function search(req,res,next) {
+  
+  const account= new Account({
+    email : req.body.email,
+    password: req.body.password
+  })
+  
+  const client = ldapjs.createClient({
+
+    url : config.ldap_url+":"+config.ldap_port,
+    timeout : config.ldap_timeout,
+    connectTimeout: config.ldap_connectTimeout,
+    reconnect: true
+
+  })
+
+  client.bind(config.ldap_Server_user, config.ldap_Server_password, function(err) {
+    if(err){
+      console.log(`Conexion Fallida error: ${err}`)
+      return res.status(500).send({
+        message: `Conexion Fallida error: ${err}`
+      })
+    }else{
+      console.log("Conexion exitosa!!!")
+
+      client.compare(`cn = ${account.email}, ou = users, o = gatherme`, 'password', account.password, function(err, matched) {
+        
+        if(err){
+          client.unbind()
+          client.destroy()
+          return res.status(500).send({message:`Fallo en el Servidor error: ${err}`})
+        } 
+        if(matched){
+          console.log('matched: ' + matched);
+          console.log(`Cuenta encontrada`)
+          client.unbind()
+          client.destroy()
+          next()
+        }else{
+          client.unbind()
+          client.destroy()
+          return res.status(404).send({message: `No se encuentra Registro`})
+        }
+        
+      }); 
+    }
+  });
+
+  
 }
 module.exports={
-    signUp
+    signUp,
+    search
 }

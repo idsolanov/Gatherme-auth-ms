@@ -10,7 +10,11 @@ const AccountSchema = Schema({
         unique:true, 
         lowercase:true
     },
-    nickName: String,
+    nickName: {
+        type: String, 
+        unique:true, 
+        lowercase:true
+    },
     password: {
         type:String
     },

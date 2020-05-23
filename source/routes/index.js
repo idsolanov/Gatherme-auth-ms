@@ -6,11 +6,8 @@ const tokenCtrl= require('../controllers/token')
 const auth =require('../middleware/auth')
 const ldap = require ('../middleware/ldap')
 
-api.post('/singUp',accountCtrl.singUp)
-
-api.post ('/ldap',ldap.signUp)
-
-api.post('/singIn',accountCtrl.singIn)
+api.post('/singUp',ldap.signUp,accountCtrl.singUp)
+api.post('/singIn',ldap.search,accountCtrl.singIn)
 
 api.post('/singOut',accountCtrl.singOut)
 
