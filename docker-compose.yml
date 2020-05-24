@@ -8,7 +8,6 @@ services:
             - '3001:3001'
         links: 
             - gatherme-authentication-db
-            - gatherme-ldap
     gatherme-authentication-db:
         container_name: gatherme-authentication-db
         image: mongo
